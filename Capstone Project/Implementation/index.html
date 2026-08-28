@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+AI Signature Forensic System
+</title>
+
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc,
+            #ffffff
+        );
+
+    color: #111827;
+
+    transition:
+        background .3s,
+        color .3s;
+}
+
+
+body.dark {
+
+    background:
+        linear-gradient(
+            135deg,
+            #020617,
+            #0f172a,
+            #111827
+        );
+
+    color: #f8fafc;
+}
+
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #020617,
+            #1e293b
+        );
+
+    color: white;
+
+    padding: 35px 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 30px
+        rgba(0,0,0,.2);
+
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 36px;
+
+    font-weight: 900;
+
+}
+
+
+.header p {
+
+    color: #cbd5e1;
+
+    margin-top: 10px;
+
+}
+
+
+.badge {
+
+    display: inline-block;
+
+    padding: 7px 15px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,.12);
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.theme-button {
+
+    position: absolute;
+
+    top: 25px;
+
+    right: 25px;
+
+    padding: 10px 15px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    background: white;
+
+    color: #111827;
+
+}
+
+
+.container {
+
+    width: 1200px;
+
+    max-width: 94%;
+
+    margin: 35px auto;
+
+}
+
+
+.card {
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 12px 40px
+        rgba(15,23,42,.08);
+
+}
+
+
+.dark .card {
+
+    background: #1e293b;
+
+    color: white;
+
+}
+
+
+h2 {
+
+    margin-top: 0;
+
+}
+
+
+.upload {
+
+    text-align: center;
+
+}
+
+
+.upload-box {
+
+    border:
+        2px dashed #cbd5e1;
+
+    border-radius: 18px;
+
+    padding: 40px;
+
+    background: #f8fafc;
+
+}
+
+
+.dark .upload-box {
+
+    background: #0f172a;
+
+}
+
+
+input[type=file] {
+
+    padding: 12px;
+
+    margin: 10px;
+
+}
+
+
+.button {
+
+    padding: 14px 25px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #475569
+        );
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.button:hover {
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.error {
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    background: #fee2e2;
+
+    color: #991b1b;
+
+}
+
+
+/* =====================================================
+   IMAGE COMPARISON
+===================================================== */
+
+.image-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 20px;
+
+}
+
+
+.image-box {
+
+    text-align: center;
+
+}
+
+
+.image-box img {
+
+    max-width: 100%;
+
+    max-height: 280px;
+
+    border-radius: 15px;
+
+    padding: 8px;
+
+    border:
+        1px solid #e5e7eb;
+
+}
+
+
+.image-title {
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+.result {
+
+    text-align: center;
+
+}
+
+
+.result-icon {
+
+    width: 90px;
+
+    height: 90px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: auto;
+
+    font-size: 45px;
+
+    background: #f1f5f9;
+
+}
+
+
+.genuine {
+
+    color: #16a34a;
+
+}
+
+
+.forged {
+
+    color: #dc2626;
+
+}
+
+
+.uncertain {
+
+    color: #d97706;
+
+}
+
+
+.result-title {
+
+    font-size: 32px;
+
+    font-weight: 900;
+
+    margin-top: 15px;
+
+}
+
+
+.result-subtitle {
+
+    color: #64748b;
+
+}
+
+
+/* =====================================================
+   GAUGE
+===================================================== */
+
+.gauge {
+
+    width: 220px;
+
+    height: 110px;
+
+    margin: 30px auto;
+
+    border-radius:
+        220px 220px 0 0;
+
+    background:
+        conic-gradient(
+            #16a34a 0deg,
+            #16a34a
+            calc(var(--confidence) * 1.8deg),
+            #e5e7eb
+            calc(var(--confidence) * 1.8deg),
+            #e5e7eb 180deg
+        );
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+.gauge::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 165px;
+
+    height: 82px;
+
+    background: white;
+
+    border-radius:
+        165px 165px 0 0;
+
+    bottom: 0;
+
+    left: 27px;
+
+}
+
+
+.dark .gauge::after {
+
+    background: #1e293b;
+
+}
+
+
+.gauge-text {
+
+    position: absolute;
+
+    z-index: 2;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 10px;
+
+    text-align: center;
+
+    font-size: 30px;
+
+    font-weight: 900;
+
+}
+
+
+/* =====================================================
+   PROBABILITY
+===================================================== */
+
+.probability-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 20px;
+
+}
+
+
+.probability {
+
+    padding: 22px;
+
+    border-radius: 16px;
+
+    background: #f8fafc;
+
+}
+
+
+.dark .probability {
+
+    background: #0f172a;
+
+}
+
+
+.progress {
+
+    height: 10px;
+
+    background: #e5e7eb;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+.progress span {
+
+    display: block;
+
+    height: 100%;
+
+}
+
+
+.green {
+
+    background: #16a34a;
+
+}
+
+
+.red {
+
+    background: #dc2626;
+
+}
+
+
+/* =====================================================
+   SCORECARD
+===================================================== */
+
+.score-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap: 18px;
+
+}
+
+
+.score {
+
+    padding: 18px;
+
+    border-radius: 15px;
+
+    background: #f8fafc;
+
+}
+
+
+.dark .score {
+
+    background: #0f172a;
+
+}
+
+
+.score-head {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+}
+
+
+.score-bar {
+
+    height: 10px;
+
+    background: #e5e7eb;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+.score-bar span {
+
+    display: block;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6366f1,
+            #111827
+        );
+
+}
+
+
+/* =====================================================
+   RADAR
+===================================================== */
+
+.radar {
+
+    max-width: 550px;
+
+    margin: auto;
+
+}
+
+
+/* =====================================================
+   FORENSIC
+===================================================== */
+
+.forensic {
+
+    margin-top: 20px;
+
+}
+
+
+.forensic li {
+
+    margin: 12px 0;
+
+}
+
+
+/* =====================================================
+   HEATMAP
+===================================================== */
+
+.heatmap {
+
+    border-radius: 15px;
+
+    max-width: 100%;
+
+    max-height: 350px;
+
+}
+
+
+/* =====================================================
+   COMPARE
+===================================================== */
+
+.compare-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 20px;
+
+}
+
+
+.compare-box {
+
+    text-align: center;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border-radius: 18px;
+
+}
+
+
+.dark .compare-box {
+
+    background: #0f172a;
+
+}
+
+
+.compare-box img {
+
+    max-width: 100%;
+
+    max-height: 220px;
+
+    border-radius: 12px;
+
+}
+
+
+.similarity {
+
+    text-align: center;
+
+    margin-top: 25px;
+
+}
+
+
+.similarity-number {
+
+    font-size: 55px;
+
+    font-weight: 900;
+
+}
+
+
+.similarity-bar {
+
+    height: 15px;
+
+    background: #e5e7eb;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+.similarity-bar span {
+
+    display: block;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6366f1,
+            #22c55e
+        );
+
+}
+
+
+/* =====================================================
+   HISTORY
+===================================================== */
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+}
+
+
+th {
+
+    background: #111827;
+
+    color: white;
+
+    padding: 14px;
+
+}
+
+
+td {
+
+    padding: 13px;
+
+    text-align: center;
+
+    border-bottom:
+        1px solid #e5e7eb;
+
+}
+
+
+/* =====================================================
+   DOWNLOAD
+===================================================== */
+
+.download {
+
+    display: inline-block;
+
+    padding: 14px 25px;
+
+    border-radius: 12px;
+
+    background: #111827;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:750px) {
+
+    .image-grid,
+    .probability-grid,
+    .score-grid,
+    .compare-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .header h1 {
+
+        font-size: 26px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<button
+    class="theme-button"
+    onclick="toggleTheme()"
+>
+
+🌓 Theme
+
+</button>
+
+
+<div class="header">
+
+    <div class="badge">
+        AI POWERED FORENSIC ANALYSIS
+    </div>
+
+    <h1>
+        AI Signature Forensic System
+    </h1>
+
+    <p>
+        Deep CNN Based Signature Forgery Detection
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     UPLOAD
+===================================================== -->
+
+<div class="card upload">
+
+<h2>
+🔐 Signature Verification
+</h2>
+
+<p>
+Upload a signature image for complete AI forensic analysis.
+</p>
+
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+>
+
+<input
+    type="hidden"
+    name="action"
+    value="analyze"
+>
+
+
+<div class="upload-box">
+
+<input
+    type="file"
+    name="signature"
+    accept=".png,.jpg,.jpeg"
+    required
+>
+
+<br>
+
+<button
+    class="button"
+    type="submit"
+>
+
+🔍 Analyze Signature
+
+</button>
+
+</div>
+
+</form>
+
+
+{% if error %}
+
+<div class="error">
+⚠ {{ error }}
+</div>
+
+{% endif %}
+
+</div>
+
+
+{% if result %}
+
+
+<!-- =====================================================
+     ORIGINAL VS PROCESSED
+===================================================== -->
+
+<div class="card">
+
+<h2>
+🖼️ Original vs Processed Signature
+</h2>
+
+
+<div class="image-grid">
+
+
+<div class="image-box">
+
+<div class="image-title">
+Original Signature
+</div>
+
+<img
+    src="{{ image_path }}"
+    alt="Original"
+>
+
+</div>
+
+
+<div class="image-box">
+
+<div class="image-title">
+Processed Signature
+</div>
+
+<img
+    src="{{ processed_path }}"
+    alt="Processed"
+>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     RESULT + GAUGE
+===================================================== -->
+
+<div class="card result">
+
+
+<div class="result-icon">
+
+{% if result.confidence < 70 %}
+
+!
+
+{% elif result.result == "GENUINE" %}
+
+✓
+
+{% else %}
+
+✕
+
+{% endif %}
+
+</div>
+
+
+<div class="
+{% if result.confidence < 70 %}
+uncertain
+{% elif result.result == 'GENUINE' %}
+genuine
+{% else %}
+forged
+{% endif %}
+result-title
+">
+
+{% if result.confidence < 70 %}
+
+UNCERTAIN RESULT
+
+{% elif result.result == "GENUINE" %}
+
+GENUINE SIGNATURE
+
+{% else %}
+
+FORGED SIGNATURE
+
+{% endif %}
+
+</div>
+
+
+<p class="result-subtitle">
+
+{% if result.confidence < 70 %}
+
+Manual verification is recommended.
+
+{% elif result.result == "GENUINE" %}
+
+The CNN prediction favors the genuine class.
+
+{% else %}
+
+The CNN prediction favors the forged class.
+
+{% endif %}
+
+</p>
+
+
+<div
+    class="gauge"
+    style="
+    --confidence:
+    {{ result.confidence }};
+    "
+>
+
+<div class="gauge-text">
+
+{{ result.confidence }}%
+
+</div>
+
+</div>
+
+
+<strong>
+CONFIDENCE SCORE
+</strong>
+
+
+</div>
+
+
+<!-- =====================================================
+     PROBABILITIES
+===================================================== -->
+
+<div class="card">
+
+<h2>
+📊 Prediction Probabilities
+</h2>
+
+
+<div class="probability-grid">
+
+
+<div class="probability">
+
+<strong>
+Genuine Probability
+</strong>
+
+<h2>
+{{ result.genuine_probability }}%
+</h2>
+
+<div class="progress">
+
+<span
+    class="green"
+    style="
+    width:
+    {{ result.genuine_probability }}%;
+    "
+></span>
+
+</div>
+
+</div>
+
+
+<div class="probability">
+
+<strong>
+Forged Probability
+</strong>
+
+<h2>
+{{ result.forged_probability }}%
+</h2>
+
+<div class="progress">
+
+<span
+    class="red"
+    style="
+    width:
+    {{ result.forged_probability }}%;
+    "
+></span>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     SCORECARD
+===================================================== -->
+
+<div class="card">
+
+<h2>
+📊 Forgery Analysis Scorecard
+</h2>
+
+
+<div class="score-grid">
+
+
+{% set scores = [
+
+("Image Quality", result.image_quality),
+
+("Stroke Consistency", result.stroke_consistency),
+
+("Shape Consistency", result.shape_consistency),
+
+("Structural Stability", result.structural_stability),
+
+("CNN Confidence", result.cnn_confidence)
+
+] %}
+
+
+{% for name, value in scores %}
+
+
+<div class="score">
+
+<div class="score-head">
+
+<span>
+{{ name }}
+</span>
+
+<strong>
+{{ value }}%
+</strong>
+
+</div>
+
+
+<div class="score-bar">
+
+<span
+    style="width: {{ value }}%;"
+></span>
+
+</div>
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+<div
+    style="
+    text-align:center;
+    margin-top:30px;
+    "
+>
+
+<h3>
+Overall Forensic Score
+</h3>
+
+<div
+    style="
+    font-size:48px;
+    font-weight:900;
+    "
+>
+
+{{ result.overall_score }}/100
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     RADAR CHART
+===================================================== -->
+
+<div class="card">
+
+<h2>
+🧬 Signature Feature Radar
+</h2>
+
+
+<div class="radar">
+
+<canvas id="radarChart"></canvas>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     HEATMAP
+===================================================== -->
+
+<div class="card">
+
+<h2>
+🔍 CNN Attention / Heatmap
+</h2>
+
+
+<p>
+Highlighted regions show areas that contributed
+to the CNN prediction.
+</p>
+
+
+{% if heatmap_path %}
+
+<div style="text-align:center;">
+
+<img
+    class="heatmap"
+    src="{{ heatmap_path }}"
+    alt="CNN Heatmap"
+>
+
+</div>
+
+{% else %}
+
+<p>
+Heatmap could not be generated for this model architecture.
+</p>
+
+{% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     AI EXPLANATION
+===================================================== -->
+
+<div class="card forensic">
+
+<h2>
+📝 AI Forensic Explanation
+</h2>
+
+
+<ul>
+
+{% for explanation in result.explanation %}
+
+<li>
+✓ {{ explanation }}
+</li>
+
+{% endfor %}
+
+</ul>
+
+
+<h3>
+Risk Level:
+{{ result.risk }}
+</h3>
+
+
+</div>
+
+
+<!-- =====================================================
+     BASIC FEATURES
+===================================================== -->
+
+<div class="card">
+
+<h2>
+📐 Signature Measurements
+</h2>
+
+
+<div class="score-grid">
+
+
+<div class="score">
+
+<strong>
+Width
+</strong>
+
+<h3>
+{{ result.signature_width }} px
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Height
+</strong>
+
+<h3>
+{{ result.signature_height }} px
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Aspect Ratio
+</strong>
+
+<h3>
+{{ result.aspect_ratio }}
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Stroke Density
+</strong>
+
+<h3>
+{{ result.stroke_density }}%
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Components
+</strong>
+
+<h3>
+{{ result.components }}
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Image Quality
+</strong>
+
+<h3>
+{{ result.quality }}
+</h3>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     PDF
+===================================================== -->
+
+{% if report_file %}
+
+<div class="card" style="text-align:center;">
+
+<h2>
+📄 Professional Verification Report
+</h2>
+
+<p>
+Your complete forensic analysis report is ready.
+</p>
+
+
+<a
+    class="download"
+    href="/download/{{ report_file }}"
+>
+
+📥 Download PDF Report
+
+</a>
+
+
+</div>
+
+{% endif %}
+
+
+{% endif %}
+
+
+<!-- =====================================================
+     COMPARE TWO SIGNATURES
+===================================================== -->
+
+<div class="card">
+
+<h2>
+🔄 Compare Two Signatures
+</h2>
+
+<p>
+Upload a reference signature and a questioned signature
+to calculate their similarity.
+</p>
+
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+>
+
+
+<input
+    type="hidden"
+    name="action"
+    value="compare"
+>
+
+
+<div class="compare-grid">
+
+
+<div>
+
+<label>
+<strong>
+Reference Signature
+</strong>
+</label>
+
+<br>
+
+<input
+    type="file"
+    name="reference"
+    accept=".png,.jpg,.jpeg"
+    required
+>
+
+</div>
+
+
+<div>
+
+<label>
+<strong>
+Questioned Signature
+</strong>
+</label>
+
+<br>
+
+<input
+    type="file"
+    name="questioned"
+    accept=".png,.jpg,.jpeg"
+    required
+>
+
+</div>
+
+
+</div>
+
+
+<br>
+
+
+<button
+    class="button"
+    type="submit"
+>
+
+🔄 Compare Signatures
+
+</button>
+
+
+</form>
+
+
+{% if comparison %}
+
+
+<div class="compare-grid" style="margin-top:30px;">
+
+
+<div class="compare-box">
+
+<h3>
+Reference Signature
+</h3>
+
+<img
+    src="{{ reference_path }}"
+>
+
+</div>
+
+
+<div class="compare-box">
+
+<h3>
+Questioned Signature
+</h3>
+
+<img
+    src="{{ questioned_path }}"
+>
+
+</div>
+
+
+</div>
+
+
+<div class="similarity">
+
+
+<h3>
+Similarity Score
+</h3>
+
+
+<div class="similarity-number">
+
+{{ comparison.similarity }}%
+
+</div>
+
+
+<div class="similarity-bar">
+
+<span
+    style="
+    width:
+    {{ comparison.similarity }}%;
+    "
+></span>
+
+</div>
+
+
+<h2>
+
+{{ comparison.result }}
+
+</h2>
+
+
+<div class="score-grid">
+
+
+<div class="score">
+
+<strong>
+Shape Similarity
+</strong>
+
+<h3>
+{{ comparison.shape_similarity }}%
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Stroke Similarity
+</strong>
+
+<h3>
+{{ comparison.stroke_similarity }}%
+</h3>
+
+</div>
+
+
+<div class="score">
+
+<strong>
+Structural Similarity
+</strong>
+
+<h3>
+{{ comparison.structure_similarity }}%
+</h3>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+{% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     HISTORY
+===================================================== -->
+
+<div class="card">
+
+<h2>
+📜 Verification History
+</h2>
+
+
+{% if history %}
+
+
+<div style="overflow-x:auto;">
+
+<table>
+
+<tr>
+
+<th>
+Date
+</th>
+
+<th>
+Result
+</th>
+
+<th>
+Confidence
+</th>
+
+<th>
+Risk
+</th>
+
+</tr>
+
+
+{% for item in history %}
+
+<tr>
+
+<td>
+{{ item.date }}
+</td>
+
+<td>
+{{ item.result }}
+</td>
+
+<td>
+{{ item.confidence }}%
+</td>
+
+<td>
+{{ item.risk }}
+</td>
+
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+</div>
+
+
+{% else %}
+
+<p>
+No verification history yet.
+</p>
+
+{% endif %}
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* ==========================================================
+   DARK MODE
+========================================================== */
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    if (
+        document.body.classList.contains("dark")
+    ) {
+
+        localStorage.setItem(
+            "theme",
+            "dark"
+        );
+
+    } else {
+
+        localStorage.setItem(
+            "theme",
+            "light"
+        );
+
+    }
+
+}
+
+
+if (
+    localStorage.getItem("theme")
+    ===
+    "dark"
+) {
+
+    document.body.classList.add(
+        "dark"
+    );
+
+}
+
+
+/* ==========================================================
+   RADAR CHART
+========================================================== */
+
+{% if result %}
+
+const radarCanvas =
+    document.getElementById(
+        "radarChart"
+    );
+
+
+if (radarCanvas) {
+
+    new Chart(
+        radarCanvas,
+        {
+
+            type: "radar",
+
+            data: {
+
+                labels: [
+
+                    "Image Quality",
+
+                    "Stroke",
+
+                    "Shape",
+
+                    "Structure",
+
+                    "CNN"
+
+                ],
+
+                datasets: [
+
+                    {
+
+                        label:
+                            "Signature Features",
+
+                        data: [
+
+                            {{ result.image_quality }},
+
+                            {{ result.stroke_consistency }},
+
+                            {{ result.shape_consistency }},
+
+                            {{ result.structural_stability }},
+
+                            {{ result.cnn_confidence }}
+
+                        ],
+
+                        borderWidth: 3,
+
+                        pointRadius: 5,
+
+                        fill: true
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    r: {
+
+                        min: 0,
+
+                        max: 100,
+
+                        ticks: {
+
+                            stepSize: 20
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+{% endif %}
+
+</script>
+
+
+</body>
+
+</html>
